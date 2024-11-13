@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Fingerprint Example</title>
+</head>
+<body>
+    <h1>Fingerprint Example</h1>
+    <div id="fingerprint"></div>
+    <script>
+        // Функція для створення хешу (для прикладу використовуємо просту хеш-функцію)
+        function simpleHash(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                const char = str.charCodeAt(i);
+                hash = (hash << 5) - hash + char;
+                hash |= 0; // Перетворення в 32-бітове ціле число
+            }
+            return hash;
+        }
+
+        // Функція для збору даних про браузер і пристрій
+        function getFingerprint() {
+            const navigatorInfo = [
+                navigator.userAgent,
+                navigator.language,
+                screen.width,
+                screen.height,
+                screen.colorDepth
+            ].join(' ');
+
+            // Додаткові дані, які можуть бути зібрані
+            const timezone = new Date().getTimezoneOffset();
+            const platform = navigator.platform;
+            const cpuClass = navigator.cpuClass || 'unknown';
+            const plugins = Array.from(navigator.plugins).map(p => p.name).join(',');
+
+            // Формування строки для хешування
+            const fingerprintData = [navigatorInfo, timezone, platform, cpuClass, plugins].join(' ');
+
+            // Створення хешу
+            return simpleHash(fingerprintData);
+        }
+
+        // Отримання Fingerprint та відображення на сторінці
+        const fingerprint = getFingerprint();
+        document.getElementById('fingerprint').innerText = `Ваш цифровий відбиток: ${fingerprint}`;
+    </script>
+</body>
+</html>
